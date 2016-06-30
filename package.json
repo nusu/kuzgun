@@ -1,0 +1,26 @@
+{
+  "name": "raven",
+  "version": "1.0.0",
+  "description": "ssh and git based ssh deployment command line tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@nusu.github.com:nusu/raven.git"
+  },
+  "keywords": [
+    "deployment",
+    "ssh",
+    "server"
+  ],
+    "bin": {
+        "raven": "./index.js"
+    },
+    "dependencies": {
+        "commander": "^2.9.0"
+    },
+  "author": "Nusu <nusususuzu@gmail.com>",
+  "license": "MIT"
+}
