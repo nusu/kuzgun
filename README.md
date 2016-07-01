@@ -26,7 +26,8 @@ assume that you have a working project, first cd to your repository, and run *ku
     $ cd my-repository/
     $ kuzgun birth
 
-*It will ask you bunch of project information, than It will save it to .kuzgun file, so you can change it later or run ** kuzgun init ** again
+*It will ask you bunch of project information, than It will save it to .kuzgun file, so you can change it later or run kuzgun init again*
+
 than you need to send kuzgun to server, It will arrange configrations for you
 
 *If you never login to your server before than login for one time and save your computer to known_hosts than exit*
