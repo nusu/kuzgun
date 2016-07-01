@@ -19,7 +19,6 @@ kuzgun
     .option('-B, --birth <birth>', 'create kuzgun file mystically')
     .option('-b, --brak <brak>', 'send kuzgun for pulling repository')
     .option('-f, --flight <flight>', 'send kuzgun for observation flight')
-    .option('-k, --raven <raven>', 'config for kuzgun system')
     .option('-c, --capture <capture>', 'alias of ssh with information, capture your ravens body and flight')
     .parse(process.argv);
 
@@ -55,7 +54,7 @@ if( !ravenWhereareYou.contains(".kuzgun")){
 var ravenFile = JSON.parse(fs.readFileSync('.kuzgun', 'utf8'));
 var privateKey = ravenFile.sshprivate;
 if(kuzgun.test){
-
+    console.log(kuzgun.test)
 }
 
 if(kuzgun.flight){
