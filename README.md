@@ -1,6 +1,9 @@
 # kuzgun
 simple, ssh based deployment command line tool
 
+## note ##
+It's new, not perfectly functional right now be awere of it
+
 ## what is it ? ##
 kuzgun is very simple deployment tool, its basically responsible to pull your changes on server.
 
@@ -10,13 +13,13 @@ It will simply go your server and tell git pull in your desired directory
 that's everything
 
 
-#Installation
+## Installation ##
 
 ----------
 
     npm install kuzgun -g
 
-#usage
+## usage ##
 assume that you have a working project, first cd to your repository, and run *kuzgun init*
 
 ----------
@@ -55,5 +58,3 @@ I inspired their characteristic features, and It's meaningfull, because raven co
 It's flying, It's commanding by your name.
 Its your virtual raven.
 
-
-# not usable at the moment.
