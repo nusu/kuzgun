@@ -1,8 +1,7 @@
 # kuzgun
 simple, ssh based deployment command line tool
 
-## note ##
-It's new, not perfectly functional right now be awere of it
+note: It's new, not perfectly functional right now be awere of it
 
 ## what is it ? ##
 kuzgun is very simple deployment tool, its basically responsible to pull your changes on server.
