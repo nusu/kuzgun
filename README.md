@@ -5,14 +5,47 @@ simple, ssh based deployment command line tool
 kuzgun is very simple deployment tool, its basically responsible to pull your changes on server.
 
 ## how it works ?##
-as first you create a .kuzgun file with "kuzgun birth" command, It's basically create a json file and store your server's information, than you're going to send your kuzgun to server for a test flight.
-In this test flight kuzgun will add your ssh-key to your server's authorized-keys, so whenever you try to login your server you will no need to enter a password.
-
-and when It's come to the detect changes and pull in the server, mantality is simple too. choose your spesific branch for git and send your kuzgun to server right after git push
-It will simply go your server and tell git pull
+Mantality is very simple. choose your spesific branch for git and send your kuzgun to server ( $ kuzgun brak ) right after git push
+It will simply go your server and tell git pull in your desired directory
 that's everything
 
 
+#Installation
+
+----------
+
+    npm install kuzgun -g
+
+#usage
+assume that you have a working project, first cd to your repository, and run *kuzgun init*
+
+----------
+
+    $ cd my-repository/
+    $ kuzgun birth
+
+*It will ask you bunch of project information, than It will save it to .kuzgun file, so you can change it later or run **kuzgun init** again*
+than you need to send kuzgun to server, It will arrange confirmations for you
+
+*If you never login to your server before than login for one time and save your computer to known_hosts than exit*
+
+----------
+
+run this for configuration:
+
+    $ kuzgun flight
+
+It will add your selected ssh-key to .ssh/authorized_keys in the server, than It will go to the dir you've selected and git clone from your repo.
+note that It will in the same directory like: git clone myrepoaddress .
+
+----------
+
+than you're ready to go, when you push changes than execute:
+
+    $ git push origin master
+    $ kuzgun brak
+your changes in your server now!
+*ravens warble like brakk brakk when they flying, because of that its brak*
 
 ## what the hell is kuzgun mean? ##
 Kuzgun means "Raven" in Turkish.
