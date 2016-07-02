@@ -63,17 +63,43 @@ if(kuzgun.flight){
     var flightClient = new Client();
     flightClient.on('ready', function() {
         console.log(chalk.magenta('Kuzgun has been arrived the destination'));
-        flightClient.exec("mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh; printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys; mkdir "+ravenFile.dir +"; cd ~/"+ravenFile.dir+"; git clone "+ravenFile.repository+" .", function(err, stream) {
+        flightClient.exec("y \n mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh;", { pty: true }, function(err, stream) {
             console.log(chalk.magenta("Kuzgun trying to configurate everything"));
             if (err) {
                 console.log(chalk.red('Kuzgun has been fall while configuring: ' + err));
-                return flightClient.end();
             }
             stream.on('end', function() {
                 console.log(chalk.yellow("Kuzgun had set up everything!"));
+            }).on('data', function(data) {
+                console.log(data.toString());
+            });
+        });
+        flightClient.exec("printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys", function(err, stream) {
+            console.log(chalk.magenta("Kuzgun trying to copy your key to authorized_keys"));
+            if (err) {
+                console.log(chalk.red('Kuzgun has been fall while copying your public key to authorized keys, log: ' + err));
+                return flightClient.end();
+            }
+            stream.on('end', function() {
+                console.log(chalk.yellow("Kuzgun successfully pasted your key"));
+            }).on('data', function(data) {
+                console.log(data.toString());
+            });
+        });
+        flightClient.exec("mkdir ~/"+ravenFile.dir +"; cd ~/"+ravenFile.dir+"; git init .; git remote add -t \* -f origin "+ravenFile.repository+"; git pull origin "+ravenFile.branch, function(err, stream) {
+            console.log(chalk.magenta("Kuzgun trying to clone your repository"));
+            if (err) {
+                console.log(chalk.red('Kuzgun has been fall while pulling your repository, log: ' + err));
+                return flightClient.end();
+            }
+            stream.on('end', function() {
+                console.log(chalk.yellow("Kuzgun successfully cloned your repository"));
                 return flightClient.end();
             }).on('data', function(data) {
                 console.log(data.toString());
+            });
+            stream.on('keyboard-interactive', function(name, instr, lang, prompts, cb) {
+                cb(['y']);
             });
         });
     }).connect({
