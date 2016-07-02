@@ -63,7 +63,7 @@ if(kuzgun.flight){
     var flightClient = new Client();
     flightClient.on('ready', function() {
         console.log(chalk.magenta('Kuzgun has been arrived the destination'));
-        flightClient.exec("mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh; printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys; mkdir "+ravenFile.dir +"; cd "+ravenFile.dir+"; git clone "+ravenFile.repository+" .", function(err, stream) {
+        flightClient.exec("mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh; printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys; mkdir "+ravenFile.dir +"; cd ~/"+ravenFile.dir+"; git clone "+ravenFile.repository+" .", function(err, stream) {
             console.log(chalk.magenta("Kuzgun trying to configurate everything"));
             if (err) {
                 console.log(chalk.red('Kuzgun has been fall while configuring: ' + err));
