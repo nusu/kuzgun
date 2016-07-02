@@ -50,9 +50,10 @@ if( !ravenWhereareYou.contains(".kuzgun")){
         console.log("no .kuzgun file found, how can it fly without coordinates?");
         exit(1);
     }
+}else{
+    var ravenFile = JSON.parse(fs.readFileSync('.kuzgun', 'utf8'));
+    var privateKey = ravenFile.sshprivate;
 }
-var ravenFile = JSON.parse(fs.readFileSync('.kuzgun', 'utf8'));
-var privateKey = ravenFile.sshprivate;
 if(kuzgun.test){
     console.log(kuzgun.test)
 }
@@ -75,32 +76,6 @@ if(kuzgun.flight){
                 console.log(data.toString());
             });
         });
-        /*flightClient.exec("printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys", function(err, stream) {
-            console.log(chalk.magenta("Kuzgun trying to copy your key to authorized_keys"));
-            if (err) {
-                console.log(chalk.red('Kuzgun has been fall while copying your public key to authorized keys, log: ' + err));
-                return flightClient.end();
-            }
-            stream.on('end', function() {
-                console.log(chalk.yellow("Kuzgun successfully pasted your key"));
-                return flightClient.end();
-            }).on('data', function(data) {
-                console.log(data.toString());
-            });
-        });*/
-        /*flightClient.exec("mkdir "+ ravenFile.dir +"; cd "+ravenFile.dir+"; git clone "+ravenFile.repository+" .", function(err, stream) {
-            console.log(chalk.magenta("Kuzgun trying to clone your repository"));
-            if (err) {
-                console.log(chalk.red('Kuzgun has been fall while pulling your repository, log: ' + err));
-                return flightClient.end();
-            }
-            stream.on('end', function() {
-                console.log(chalk.yellow("Kuzgun successfully cloned your repository"));
-                return flightClient.end();
-            }).on('data', function(data) {
-                console.log(data.toString());
-            });
-        });*/
     }).connect({
         host: ravenFile.server,
         username: ravenFile.suser,
@@ -194,6 +169,7 @@ if(kuzgun.init || kuzgun.birth){
             message: "server username"
         },
         {
+            type: "password",
             name: "spassword",
             message: "server password"
         },
