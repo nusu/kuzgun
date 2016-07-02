@@ -19,6 +19,7 @@ that's everything
     npm install kuzgun -g
 
 ## usage ##
+watch the video: [usage video](https://www.youtube.com/watch?v=pCsU8JC5wVk)
 assume that you have a working project, first cd to your repository, and run *kuzgun init*
 
 ----------
