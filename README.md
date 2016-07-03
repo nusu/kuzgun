@@ -52,7 +52,7 @@ your changes in your server now!
 *ravens warble like brakk brakk when they flying, because of that its brak*
 
 #Tips
-if you are using something like [forever](https://www.npmjs.com/package/forever%22forever%22) or [pm2](https://www.npmjs.com/package/pm2%22pm2%22) or whatever you can simply specify what commands kuzgun will execute preupdate and afterupdate in .kuzgun file
+if you are using something like [forever](https://www.npmjs.com/package/forever%22forever%22) or [pm2](https://www.npmjs.com/package/pm2%22pm2%22) etc. you can simply specify what commands kuzgun will execute preupdate and afterupdate in .kuzgun file
 
 and if you willing to connect your server with ssh by your own, you can simply run
 
