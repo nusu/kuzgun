@@ -28,6 +28,22 @@ function getUserHome() {
     return process.env.HOME || process.env.USERPROFILE;
 }
 
+// semicolon fix
+function semicolonFix(myString){
+    myString = myString.trim();
+    var stringLength = myString.length;
+    var lastChar = myString.charAt(stringLength - 1);
+    var firstChar = myString.charAt(0);
+    if( firstChar != ";"){
+        myString = ";" + myString;
+    }
+    if( lastChar != ";"){
+        myString = myString + ";";
+    }
+    return myString;
+}
+
+
 // exit
 // Fix stdout truncation on windows
 function exit(code) {
@@ -54,8 +70,21 @@ if( !ravenWhereareYou.contains(".kuzgun")){
     var ravenFile = JSON.parse(fs.readFileSync('.kuzgun', 'utf8'));
     var privateKey = ravenFile.sshprivate;
 }
+
+var preupdate= "",
+    afterupdate= "";
+if(ravenFile.preupdate){
+    preupdate = semicolonFix(ravenFile.preupdate);
+}else{
+    preupdate = ";";
+}
+if(ravenFile.afterupdate){
+    afterupdate = semicolonFix(ravenFile.afterupdate);
+}else{
+    afterupdate = ";";
+}
 if(kuzgun.test){
-    console.log(kuzgun.test)
+    // development purposes only
 }
 
 if(kuzgun.flight){
@@ -63,7 +92,7 @@ if(kuzgun.flight){
     var flightClient = new Client();
     flightClient.on('ready', function() {
         console.log(chalk.magenta('Kuzgun has been arrived the destination'));
-        flightClient.exec("y \n mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh;", { pty: true }, function(err, stream) {
+        flightClient.exec("\n mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh;", { pty: true }, function(err, stream) {
             console.log(chalk.magenta("Kuzgun trying to configurate everything"));
             if (err) {
                 console.log(chalk.red('Kuzgun has been fall while configuring: ' + err));
@@ -86,7 +115,7 @@ if(kuzgun.flight){
                 console.log(data.toString());
             });
         });
-        flightClient.exec("mkdir ~/"+ravenFile.dir +"; cd ~/"+ravenFile.dir+"; git init .; git remote add -t \* -f origin "+ravenFile.repository+"; git pull origin "+ravenFile.branch, function(err, stream) {
+        flightClient.exec("mkdir ~/"+ravenFile.dir +"; cd ~/"+ravenFile.dir+""+ preupdate +"git init .; git remote add -t \* -f origin "+ravenFile.repository+"; git pull origin "+ravenFile.branch+""+afterupdate, {pty: true}, function(err, stream) {
             console.log(chalk.magenta("Kuzgun trying to clone your repository"));
             if (err) {
                 console.log(chalk.red('Kuzgun has been fall while pulling your repository, log: ' + err));
@@ -127,7 +156,7 @@ if(kuzgun.brak){
     var kuzgunPath = ravenFile.dir,
         kuzgunBranch= ravenFile.alias+" "+ravenFile.branch;
     brakClient.on('ready', function() {
-        brakClient.exec('cd '+kuzgunPath+'; git pull '+kuzgunBranch, function(err, stream) {
+        brakClient.exec('cd '+kuzgunPath+''+ preupdate +'git pull '+kuzgunBranch+''+afterupdate, function(err, stream) {
             if (err) {
                 console.log(chalk.red('Kuzgun has been fall while pulling the repository, log: ' + err));
                 return brakClient.end();
@@ -135,15 +164,12 @@ if(kuzgun.brak){
             stream.on('end', function() {
                 return brakClient.end();
             }).on('data', function(data) {
-                console.log(data.toString());
+                //console.log(data.toString());
             });
             stream.on('close', function(code, signal) {
-                console.log(chalk.magenta('Stream :: close :: code: ' + code + ', signal: ' + signal));
                 brakClient.end();
             }).on('data', function(data) {
-                console.log(chalk.magenta('Server Said (STDOUT): ' + data));
-            }).stderr.on('data', function(data) {
-                console.log(chalk.magenta('Server Said (STDERR): ' + data));
+                console.log(chalk.yellow('kuzgun: ' + data));
             });
         });
     }).connect({
@@ -222,6 +248,16 @@ if(kuzgun.init || kuzgun.birth){
             default: ""
         },
         {
+            name: "preupdate",
+            message: "preupdate commands (separate with ;) :",
+            default: ""
+        },
+        {
+            name: "afterupdate",
+            message: "afterupdate commands (separate with ;) :",
+            default: ""
+        },
+        {
             name:"alias",
             message: "repository remote alias",
             default: "origin"
@@ -245,6 +281,8 @@ if(kuzgun.init || kuzgun.birth){
             sport: answers.sport,
             sshprivate: sshExactPath+'/'+answers.sshprivate,
             sshpublic: sshExactPath+'/'+answers.sshpublic,
+            preupdate: answers.preupdate,
+            afterupdate: answers.afterupdate,
             alias: answers.alias,
             branch: answers.branch,
             dir: answers.dir,
