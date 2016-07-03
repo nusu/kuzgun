@@ -54,6 +54,8 @@ your changes in your server now!
 #Tips
 if you are using something like [forever](https://www.npmjs.com/package/forever%22forever%22) or [pm2](https://www.npmjs.com/package/pm2%22pm2%22) etc. you can simply specify what commands kuzgun will execute preupdate and afterupdate in .kuzgun file
 
+----------
+
 and if you willing to connect your server with ssh by your own, you can simply run
 
     $ kuzgun capture
