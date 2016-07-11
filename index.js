@@ -8,14 +8,15 @@ var kuzgun      = require('commander'),
     r           = require("inquirer"),
     Client      = require('ssh2').Client,
     ncp         = require("copy-paste"),
-    chalk       = require("chalk");
+    chalk       = require("chalk"),
+    notifier    = require('node-notifier'),
+    nc          = new notifier.NotificationCenter();
 
 // prompt
 kuzgun
-    .version('1.0.0')
+    .version('1.1.1')
     .arguments('[options] <file ...>')
     .option('-i, --init <init>', 'create kuzgun file')
-    .option('-t, --test <test>', 'testet')
     .option('-B, --birth <birth>', 'create kuzgun file mystically')
     .option('-b, --brak <brak>', 'send kuzgun for pulling repository')
     .option('-f, --flight <flight>', 'send kuzgun for observation flight')
@@ -43,6 +44,28 @@ function semicolonFix(myString){
     return myString;
 }
 
+// array compare
+Array.prototype.compare = function(arrayError) {
+    var tut = 0;
+    for( i=0; i<arrayError.length; i++ ){
+        if(~this.indexOf(arrayError[i])){
+            tut = tut + 1;
+        }
+        if(i == arrayError.length - 1){
+            if(tut == arrayError.length){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+}
+
+// possible git output errors for error management
+var moveRemove = [ 'move', 'or', 'remove', 'merge.\nAborting\n' ];
+var forgottenPush = ['Already', 'up-to-date.\n'];
+var successMsg = ['file', 'changed,'];
+var identity = ['Please', 'tell', 'me', 'who', 'you', 'identity'];
 
 // exit
 // Fix stdout truncation on windows
@@ -71,21 +94,8 @@ if( !ravenWhereareYou.contains(".kuzgun")){
     var privateKey = ravenFile.sshprivate;
 }
 
-var preupdate= "",
-    afterupdate= "";
-if(ravenFile.preupdate){
-    preupdate = semicolonFix(ravenFile.preupdate);
-}else{
-    preupdate = ";";
-}
-if(ravenFile.afterupdate){
-    afterupdate = semicolonFix(ravenFile.afterupdate);
-}else{
-    afterupdate = ";";
-}
-if(kuzgun.test){
-    // development purposes only
-}
+var preupdate = ravenFile.preupdate ? semicolonFix(ravenFile.preupdate) : ";";
+var afterupdate = ravenFile.afterupdate ? semicolonFix(ravenFile.afterupdate) : ";";
 
 if(kuzgun.flight){
     // for add ssh key to knowing hosts
@@ -135,6 +145,7 @@ if(kuzgun.flight){
         host: ravenFile.server,
         username: ravenFile.suser,
         password: ravenFile.spassword,
+        privateKey: fs.readFileSync(privateKey),
         port: 22
     });
 }
@@ -164,12 +175,42 @@ if(kuzgun.brak){
             stream.on('end', function() {
                 return brakClient.end();
             }).on('data', function(data) {
-                //console.log(data.toString());
+
             });
             stream.on('close', function(code, signal) {
                 brakClient.end();
-            }).on('data', function(data) {
-                console.log(chalk.yellow('kuzgun: ' + data));
+            }).stdout.on('data', function(data) {
+                var res = data.toString().split(' ');
+                if(res.compare(forgottenPush)){
+                    console.log(chalk.magenta("You must forgotten to push your changes, because I'm seeing Already up-to-date alert."));
+                    nc.notify({
+                        'title': 'Kuzgun with Error',
+                        'message': 'you must forgotten to push your changes.'
+                    });
+                }
+                if(res.compare(successMsg)){
+                    console.log(chalk.yellow("I successfully pulled your commit"));
+                    nc.notify({
+                        'title': 'Kuzgun',
+                        'message': 'successfully deployed.'
+                    });
+                }
+                if(res.compare(moveRemove)){
+                    nc.notify({
+                        'title': 'Kuzgun with Error',
+                        'message': 'there was untracked files in the server.'
+                    });
+                    console.log(chalk.magenta("kuzgun: Git said there was untrackted files, so you had to erase them first"));
+                }
+                if(res.compare(identity)){
+                    nc.notify({
+                        'title': 'Kuzgun with Error',
+                        'message': "you need to set your account's default identity."
+                    });
+                    console.log(chalk.magenta("kuzgun: Git said you need to set your account's default identity."));
+                    console.log(chalk.yellow('you can copy your ssh information with kuzgun capture'));
+                }
+                //console.log(chalk.yellow('kuzgun: ' + data));
             });
         });
     }).connect({
