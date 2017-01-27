@@ -92,10 +92,10 @@ if( !ravenWhereareYou.contains(".kuzgun")){
 }else{
     var ravenFile = JSON.parse(fs.readFileSync('.kuzgun', 'utf8'));
     var privateKey = ravenFile.sshprivate;
+		var preupdate = ravenFile.preupdate ? semicolonFix(ravenFile.preupdate) : ";";
+		var afterupdate = ravenFile.afterupdate ? semicolonFix(ravenFile.afterupdate) : ";";
 }
 
-var preupdate = ravenFile.preupdate ? semicolonFix(ravenFile.preupdate) : ";";
-var afterupdate = ravenFile.afterupdate ? semicolonFix(ravenFile.afterupdate) : ";";
 
 if(kuzgun.flight){
     // for add ssh key to knowing hosts
