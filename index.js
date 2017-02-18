@@ -86,7 +86,7 @@ Array.prototype.contains = function (v) {
 var ravenWhereareYou = fs.readdirSync(process.cwd());
 if( !ravenWhereareYou.contains(".kuzgun")){
     if(!kuzgun.init && !kuzgun.birth){
-        console.log("no .kuzgun file found, how can it fly without coordinates?");
+        console.log("No .kuzgun file found. How can it fly without coordinates?");
         exit(1);
     }
 }else{
@@ -101,22 +101,22 @@ if(kuzgun.flight){
     // for add ssh key to knowing hosts
     var flightClient = new Client();
     flightClient.on('ready', function() {
-        console.log(chalk.magenta('Kuzgun has been arrived the destination'));
+        console.log(chalk.magenta('Kuzgun has arrived at the destination'));
         flightClient.exec("\n mkdir ~/.ssh; touch ~/.ssh/authorized_keys; chmod 600 ~/.ssh/authorized_keys; chmod 700 ~/.ssh;", { pty: true }, function(err, stream) {
-            console.log(chalk.magenta("Kuzgun trying to configurate everything"));
+            console.log(chalk.magenta("Kuzgun is trying to configurate everything"));
             if (err) {
-                console.log(chalk.red('Kuzgun has been fall while configuring: ' + err));
+                console.log(chalk.red('Kuzgun failed during configuration: ' + err));
             }
             stream.on('end', function() {
-                console.log(chalk.yellow("Kuzgun had set up everything!"));
+                console.log(chalk.yellow("Kuzgun has set everything up!"));
             }).on('data', function(data) {
                 console.log(data.toString());
             });
         });
         flightClient.exec("printf '%s\n' '"+ fs.readFileSync(ravenFile.sshpublic) +"' > ~/.ssh/authorized_keys", function(err, stream) {
-            console.log(chalk.magenta("Kuzgun trying to copy your key to authorized_keys"));
+            console.log(chalk.magenta("Kuzgun is trying to copy your key to authorized_keys"));
             if (err) {
-                console.log(chalk.red('Kuzgun has been fall while copying your public key to authorized keys, log: ' + err));
+                console.log(chalk.red('Kuzgun failed while copying your public key to your authorized keys: ' + err));
                 return flightClient.end();
             }
             stream.on('end', function() {
@@ -126,9 +126,9 @@ if(kuzgun.flight){
             });
         });
         flightClient.exec("mkdir ~/"+ravenFile.dir +"; cd ~/"+ravenFile.dir+""+ preupdate +"git init .; git remote add -t \* -f origin "+ravenFile.repository+"; git pull origin "+ravenFile.branch+""+afterupdate, {pty: true}, function(err, stream) {
-            console.log(chalk.magenta("Kuzgun trying to clone your repository"));
+            console.log(chalk.magenta("Kuzgun is trying to clone your repository"));
             if (err) {
-                console.log(chalk.red('Kuzgun has been fall while pulling your repository, log: ' + err));
+                console.log(chalk.red('Kuzgun failed while pulling your repository: ' + err));
                 return flightClient.end();
             }
             stream.on('end', function() {
@@ -169,7 +169,7 @@ if(kuzgun.brak){
     brakClient.on('ready', function() {
         brakClient.exec('cd '+kuzgunPath+''+ preupdate +'git pull '+kuzgunBranch+''+afterupdate, function(err, stream) {
             if (err) {
-                console.log(chalk.red('Kuzgun has been fall while pulling the repository, log: ' + err));
+                console.log(chalk.red('Kuzgun failed while pulling the repository: ' + err));
                 return brakClient.end();
             }
             stream.on('end', function() {
@@ -182,7 +182,7 @@ if(kuzgun.brak){
             }).stdout.on('data', function(data) {
                 var res = data.toString().split(' ');
                 if(res.compare(forgottenPush)){
-                    console.log(chalk.magenta("You must forgotten to push your changes, because I'm seeing Already up-to-date alert."));
+                    console.log(chalk.magenta("You must forgotten to push your changes, because I'm seeing an already up-to-date alert."));
                     nc.notify({
                         'title': 'Kuzgun with Error',
                         'message': 'you must forgotten to push your changes.'
